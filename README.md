@@ -1,4 +1,8 @@
-# CoolFivemFramework
+# Fivem Framework by [Trsak] & authors
+# This repo is WIP, dont use it without any proper coding knowleadge.
+
+* This repo is synced with https://github.com/NewEditOfficial/trsak-framework-recipe
+
 This repository contains whole custom FiveM framework with many resources. All messsages in those resources are written in Czech language.  
 
 **You will find a lot of legacy code. Also, there is no support given.**  

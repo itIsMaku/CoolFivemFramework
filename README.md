@@ -2,6 +2,7 @@
 # This repo is WIP, dont use it without any proper coding knowledge.
 
 * This repo is synced with (https://github.com/NewEditOfficial/trsak-framework-recipe) recipe.
+* If you are interested in contribution, you can join discord. ( https://discord.gg/Ffk7t5U3PH)
 
 This repository contains whole custom FiveM framework with many resources. All messsages in those resources are written in Czech language.  
 

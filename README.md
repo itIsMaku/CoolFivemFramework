@@ -20,6 +20,7 @@ List of people that have contributed in a period of longer time:
 - Rejben
 - bertt
 - Filis93
+- NewEdit
 
 ## How to run it?
 Figure it on your own, or just use its parts. This will need some work to get it all working together, as some partsw are missing.    

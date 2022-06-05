@@ -10,6 +10,9 @@ local quePlayers = {}
 local droppedPlayers = {}
 local oldPlayerTimes = {}
 
+local serverBuild = GetConvar('sv_build', "localhost")
+local defaultCharsLeft = GetConvarInt('charsLeft', 50)
+
 StopResource("hardcap")
 
 MySQL.ready(
@@ -128,6 +131,50 @@ AddEventHandler(
     end
 )
 
+function DetermineDataByBuild(playerSteam, playerDiscord, _source)
+    local newUserAdded = nil
+
+    if serverBuild == 'localhost' then
+        newUserAdded = exports.data:newConnectedUser(
+            _source,
+            {
+                identifier = playerSteam,
+                discord = playerDiscord,
+                nickname = name,
+                inAnim = false,
+                source = _source,
+                status = nil,
+                admin = {},
+                settings = {},
+                character = nil,
+                chars_left = defaultCharsLeft,
+                connectionTime = 0,
+                whitelisted = true
+            }
+        )
+    else
+        newUserAdded = exports.data:newConnectedUser(
+            _source,
+            {
+                identifier = playerSteam,
+                discord = playerDiscord,
+                nickname = name,
+                inAnim = false,
+                source = _source,
+                status = nil,
+                admin = result[1].admin and result[1].admin or {},
+                settings = result[1].setting and json.decode(result[1].settings) or {},
+                character = nil,
+                chars_left = result[1].chars_left and result[1].chars_left or defaultCharsLeft,
+                connectionTime = 0,
+                whitelisted = true
+            }
+        )
+    end
+
+    return newUserAdded
+end
+
 function OnPlayerConnecting(name, setKickReason, deferrals)
     local _source = source
     local playerSteam, playerDiscord
@@ -241,6 +288,10 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 
                     Wait(0)
 
+                    if serverBuild == 'localhost' then
+                        print('INFO - Whitelist is disabled, server is localhost build type')
+                    end
+
                     local result = MySQL.Sync.fetchAll(
                         "SELECT admin, whitelisted, chars_left, settings FROM users WHERE identifier = :identifier LIMIT 1",
                         {
@@ -248,7 +299,7 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
                         }
                     )
 
-                    if #result == 0 or result[1].whitelisted == 0 then
+                    if (serverBuild == 'production') and (#result == 0 or result[1].whitelisted == 0) then
                         exports.logs:sendToDiscord(
                             {
                                 channel = "pripojeni-odpojeni",
@@ -272,29 +323,15 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
                         }
                     )
 
-                    local newUserAdded = exports.data:newConnectedUser(
-                        _source,
-                        {
-                            identifier = playerSteam,
-                            discord = playerDiscord,
-                            nickname = name,
-                            inAnim = false,
-                            source = _source,
-                            status = nil,
-                            admin = result[1].admin,
-                            settings = json.decode(result[1].settings),
-                            character = nil,
-                            chars_left = result[1].chars_left,
-                            connectionTime = 0,
-                            whitelisted = true
-                        }
-                    )
+                    local newUserAdded = DetermineDataByBuild(playerSteam, playerDiscord, _source)
 
                     if not newUserAdded then
                         deferrals.done("Nastala chyba při načítání uživatelských dat, zkus to znovu!")
                         return
                     end
+
                     local pointsToAdd = 0
+
                     if droppedPlayers[playerSteam] ~= nil then
                         if droppedPlayers[playerSteam] + 300 > os.time() then
                             pointsToAdd = 200000
@@ -302,6 +339,7 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
                     end
 
                     Wait(0)
+
                     showAdaptiveCard(deferrals, "Připojování...", "Kontroluji frontu...")
                     quePlayers[playerSteam] = {
                         points = GetUserPoints(playerSteam, true) + pointsToAdd,

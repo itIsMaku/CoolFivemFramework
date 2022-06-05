@@ -1,7 +1,7 @@
 # Fivem Framework by [Trsak] & authors
 # This repo is WIP, dont use it without any proper coding knowledge.
 
-* This repo is synced with https://github.com/NewEditOfficial/trsak-framework-recipe
+* This repo is synced with (https://github.com/NewEditOfficial/trsak-framework-recipe) recipe.
 
 This repository contains whole custom FiveM framework with many resources. All messsages in those resources are written in Czech language.  
 

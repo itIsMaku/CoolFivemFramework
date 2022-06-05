@@ -1,5 +1,5 @@
 # Fivem Framework by [Trsak] & authors
-# This repo is WIP, dont use it without any proper coding knowleadge.
+# This repo is WIP, dont use it without any proper coding knowledge.
 
 * This repo is synced with https://github.com/NewEditOfficial/trsak-framework-recipe
 

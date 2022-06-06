@@ -28,55 +28,40 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 
----------------------------------------------------------------------------------------]]--
-
--- Branding!
-local label =
-[[ 
-  //
-  ||       __      __        _ _   _        _   ___  ___   _____  __
-  ||       \ \    / / _ __ _(_) |_| |_     /_\ | _ \/ __| |_  ) \/ /
-  ||        \ \/\/ / '_/ _` | |  _| ' \   / _ \|   /\__ \  / / >  < 
-  ||         \_/\_/|_| \__,_|_|\__|_||_| /_/ \_\_|_\|___/ /___/_/\_\
-  || 
-  ||                        Created by WolfKnight
-  ||]]
+---------------------------------------------------------------------------------------]] --
 
 -- Returns the current version set in fxmanifest.lua
 function GetCurrentVersion()
-	return GetResourceMetadata( GetCurrentResourceName(), "version" )
+	return GetResourceMetadata(GetCurrentResourceName(), "version")
 end
 
 -- Grabs the latest version number from the web GitHub
-PerformHttpRequest( "https://wolfknight98.github.io/wk_wars2x_web/version.txt", function( err, text, headers )
+PerformHttpRequest("https://wolfknight98.github.io/wk_wars2x_web/version.txt", function(err, text, headers)
 	-- Wait to reduce spam
-	Citizen.Wait( 2000 )
-
-	-- Print the branding!
-	print( label )
+	Citizen.Wait(2000)
 
 	-- Get the current resource version
 	local curVer = GetCurrentVersion()
 
-	print( "  ||    Current version: " .. curVer )
+	print("Current version: " .. curVer)
 
-	if ( text ~= nil ) then
+	if (text ~= nil) then
 		-- Print latest version
-		print( "  ||    Latest recommended version: " .. text .."\n  ||" )
+		print("Latest recommended version: " .. text)
 
 		-- If the versions are different, print it out
-		if ( text ~= curVer ) then
-			print( "  ||    ^1Your Wraith ARS 2X version is outdated, visit the FiveM forum post to get the latest version.\n^0  \\\\\n" )
+		if (text ~= curVer) then
+			print("^1Your Wraith ARS 2X version is outdated, visit the FiveM forum post to get the latest version.^0")
 		else
-			print( "  ||    ^2Wraith ARS 2X is up to date!\n^0  ||\n  \\\\\n" )
+			print("^2Wraith ARS 2X is up to date!^0")
 		end
 	else
 		-- In case the version can not be requested, print out an error message
-		print( "  ||    ^1There was an error getting the latest version information.\n^0  ||\n  \\\\\n" )
+		print("^1There was an error getting the latest version information.^0")
 	end
 
 	-- Warn the console if the resource has been renamed, as this will cause issues with the resource's functionality.
-	if ( GetCurrentResourceName() ~= "wk_wars2x" ) then
-		print( "^1ERROR: Resource name is not wk_wars2x, expect there to be issues with the resource. To ensure there are no issues, please leave the resource name as wk_wars2x^0\n\n" )
+	if (GetCurrentResourceName() ~= "wk_wars2x") then
+		print("^1ERROR: Resource name is not wk_wars2x, expect there to be issues with the resource. To ensure there are no issues, please leave the resource name as wk_wars2x^0\n\n")
 	end
-end )
+end)

@@ -16,7 +16,10 @@ local permission = GetConvarInt('defaultUserPerm', 1)
 
 USER_PERMISSIONS = {
     [0] = 'User',
-    [1] = 'Admin'
+    [1] = 'Still-User',
+    [2] = 'Admin',
+    [3] = 'Dev',
+    [4] = 'Leadership',
 }
 
 StopResource("hardcap")

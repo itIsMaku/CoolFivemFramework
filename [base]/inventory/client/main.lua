@@ -113,7 +113,7 @@ AddEventHandler(
         )
 
         setupPlayerWeapons()
-        setupPlayerMobile()
+        -- setupPlayerMobile()
     end
 )
 
@@ -153,7 +153,7 @@ AddEventHandler(
             setupPlayerWeapons()
             if phoneRemoved then
                 print("REMOVING PHONE")
-                setupPlayerMobile()
+                -- setupPlayerMobile()
             end
             if isOpened then
                 SendNUIMessage(
@@ -181,7 +181,7 @@ AddEventHandler(
         if playerId == GetPlayerServerId(PlayerId()) then
             Inventory = inventory
             setupPlayerWeapons()
-            setupPlayerMobile()
+            -- setupPlayerMobile()
             if isOpened then
                 SendNUIMessage(
                     {
@@ -446,7 +446,9 @@ function setupPlayerMobile()
     if Items == nil then
         return
     end
+    
     Mobile = nil
+    
     for _, item in each(Inventory.data) do
         local itemData = Items[item.name]
 
@@ -455,6 +457,7 @@ function setupPlayerMobile()
             break
         end
     end
+
     exports.phone:ActivateMobile(Mobile)
 end
 

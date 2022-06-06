@@ -11,7 +11,13 @@ local droppedPlayers = {}
 local oldPlayerTimes = {}
 
 local serverBuild = GetConvar('sv_build', "localhost")
-local defaultCharsLeft = GetConvarInt('charsLeft', 50)
+local chars = GetConvarInt('charsLeft', 1)
+local permission = GetConvarInt('defaultUserPerm', 1)
+
+USER_PERMISSIONS = {
+    [0] = 'User',
+    [1] = 'Admin'
+}
 
 StopResource("hardcap")
 
@@ -131,7 +137,17 @@ AddEventHandler(
     end
 )
 
-function DetermineDataByBuild(playerSteam, playerDiscord, _source)
+function DeterminePermByLevel(permLevel)
+    local retval = nil
+
+    if USER_PERMISSIONS[permLevel] then
+        retval = USER_PERMISSIONS[permLevel]
+    end
+
+    return retval
+end
+
+function DetermineDataByBuild(result, playerSteam, playerDiscord, _source, name)
     local newUserAdded = nil
 
     if serverBuild == 'localhost' then
@@ -144,14 +160,16 @@ function DetermineDataByBuild(playerSteam, playerDiscord, _source)
                 inAnim = false,
                 source = _source,
                 status = nil,
-                admin = {},
+                admin = 1,
                 settings = {},
                 character = nil,
-                chars_left = defaultCharsLeft,
+                chars_left = tonumber(chars),
                 connectionTime = 0,
                 whitelisted = true
             }
         )
+
+        print(('Setting [%s] with permissions [%s].'):format(playerSteam, DeterminePermByLevel(permission)))
     else
         newUserAdded = exports.data:newConnectedUser(
             _source,
@@ -162,10 +180,10 @@ function DetermineDataByBuild(playerSteam, playerDiscord, _source)
                 inAnim = false,
                 source = _source,
                 status = nil,
-                admin = result[1].admin and result[1].admin or {},
+                admin = result[1].admin and result[1].admin or permission,
                 settings = result[1].setting and json.decode(result[1].settings) or {},
                 character = nil,
-                chars_left = result[1].chars_left and result[1].chars_left or defaultCharsLeft,
+                chars_left = result[1].chars_left and result[1].chars_left or chars,
                 connectionTime = 0,
                 whitelisted = true
             }
@@ -180,7 +198,9 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
     local playerSteam, playerDiscord
     local identifiers = GetPlayerIdentifiers(_source)
 
+
     deferrals.defer()
+
     Wait(0)
 
     Citizen.CreateThread(
@@ -192,6 +212,8 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
                     playerDiscord = v:sub(string.len("discord:") + 1)
                 end
             end
+
+            print(playerSteam, playerDiscord, name)
 
             for i = Config.AntiSpamTimer, 1, -1 do
                 local seconds = "sekund"
@@ -288,6 +310,7 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
 
                     Wait(0)
 
+
                     if serverBuild == 'localhost' then
                         print('INFO - Whitelist is disabled, server is localhost build type')
                     end
@@ -314,16 +337,24 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
                         return
                     end
 
-                    MySQL.Async.execute(
-                        "UPDATE users SET name = :name, discord = :discord, lastconnected = NOW() WHERE identifier = :identifier",
-                        {
-                            identifier = playerSteam,
-                            discord = playerDiscord,
-                            name = name
-                        }
-                    )
+                    if (serverBuild == 'production') then
+                        MySQL.Async.execute(
+                            "UPDATE users SET name = :name, discord = :discord, lastconnected = NOW() WHERE identifier = :identifier",
+                            {
+                                identifier = playerSteam,
+                                discord = playerDiscord,
+                                name = name
+                            }
+                        )
+                    end
 
-                    local newUserAdded = DetermineDataByBuild(playerSteam, playerDiscord, _source)
+                    if #result == 0 and serverBuild == 'localhost' then
+                        MySQL.insert('INSERT INTO users (identifier, name, discord) VALUES (?, ?, ?)', {playerSteam, name, playerDiscord}, function(id)
+                            print('User was saved into database.')
+                        end)
+                    end
+
+                    local newUserAdded = DetermineDataByBuild(result, playerSteam, playerDiscord, _source, name)
 
                     if not newUserAdded then
                         deferrals.done("Nastala chyba při načítání uživatelských dat, zkus to znovu!")
@@ -341,6 +372,7 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
                     Wait(0)
 
                     showAdaptiveCard(deferrals, "Připojování...", "Kontroluji frontu...")
+
                     quePlayers[playerSteam] = {
                         points = GetUserPoints(playerSteam, true) + pointsToAdd,
                         connectTime = os.time(),

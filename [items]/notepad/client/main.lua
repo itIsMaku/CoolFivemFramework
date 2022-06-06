@@ -55,12 +55,12 @@ function closeNotepad()
     )
     isUiOpen = false
     SetNuiFocus(false, false)
-    exports.emotes:cancelEmote()
+    exports.dpemotes:cancelEmote()
     exports.key_hints:hideBottomHint({name = "notepad"})
 end
 
 function openNotepad(data)
-    exports.emotes:playEmoteByName("notepad")
+    exports.dpemotes:playEmoteByName("notepad")
     exports.key_hints:displayBottomHint({name = "notepad", key = "~INPUT_DUCK~", text = "Chodit"})
     openedId = data.id
     SendNUIMessage(

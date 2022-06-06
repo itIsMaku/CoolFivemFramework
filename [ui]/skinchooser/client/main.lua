@@ -113,6 +113,7 @@ function loadSavedOutfit()
     exports["fivem-appearance"]:setPlayerAppearance(playerAppearance, playerTattoos)
 end
 
+
 function openSkinMenu(config, data)
     inShop = true
     playerSexPre = getPlayerSex()

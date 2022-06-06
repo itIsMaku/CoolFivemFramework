@@ -146,7 +146,7 @@ function updateUserVar(client, var, att)
     local identifier = getCachedPlayerIdentifier(client)
 
     if identifier and users[identifier] then
-        if var == "nickname" then
+        if var == "name" then
             att = unescape(att)
         end
 
@@ -194,7 +194,7 @@ function getUsersBaseData(predicate, includeCharData)
         if predicate == nil or predicate(userData) then
             usersData[identifier] = {
                 source = userData.source,
-                nickname = userData.nickname
+                name = userData.name
             }
         end
     end
@@ -228,7 +228,7 @@ function getUsersBlipData()
             local data = {
                 source = user.source,
                 identifier = user.identifier,
-                nickname = user.nickname
+                name = user.name
             }
             if user.character then
                 for _, j in pairs(user.character.jobs) do
@@ -370,7 +370,7 @@ function saveChar(client, status)
                 }
             )
 
-            --print("^2[SYSTEM MESSAGE]^5 SAVED USER ^4" .. users[identifier].nickname .. "^5 WITH CHARACTER ^4" .. savingchar.firstname .. " " .. savingchar.lastname .. " (" .. savingchar.id .. ")")
+            print("^2[SYSTEM MESSAGE]^5 SAVED USER ^4" .. users[identifier].nickname .. "^5 WITH CHARACTER ^4" .. savingchar.firstname .. " " .. savingchar.lastname .. " (" .. savingchar.id .. ")")
 
             if status and status ~= -1 then
                 users[identifier].status = status

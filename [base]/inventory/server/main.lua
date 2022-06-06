@@ -230,8 +230,9 @@ AddEventHandler(
             addPlayerItem(_source, "cash", Config.defaultCash, {})
             exports.food:giveItem(_source, "water_raine", 3)
             exports.food:giveItem(_source, "energyfood_egochaser", 2)
-            exports.phone:create({ _source, "IFruit" })
-            exports.phone:create({ _source, "Basic" })
+
+            -- exports.phone:create({ _source, "IFruit" })
+            -- exports.phone:create({ _source, "Basic" })
         else
             local loadedData = json.decode(inventoryData)
             if not loadedData or loadedData == "null" then
@@ -635,9 +636,12 @@ function forceAddPlayerItem(client, itemName, count, data, slot, dropIfNeeded)
 end
 
 function addPlayerItem(client, itemName, count, data, slot, dropIfNeeded)
-
     local identifier = exports.data:getUserVar(client, "identifier")
     local itemData = Items[itemName]
+
+    if itemData == nil then
+        return print(('undefined_item [%s] | [%s]'):format(itemName, count))
+    end
 
     if Config.Magazines[itemName] then
         data.isMagazine = true
@@ -648,6 +652,7 @@ function addPlayerItem(client, itemName, count, data, slot, dropIfNeeded)
     end
 
     local actualCount = count
+    
     if itemData.type == "weapon" or itemData.type == "mobile" or itemData.type == "sim" or data.isMagazine then
         actualCount = 1
     end

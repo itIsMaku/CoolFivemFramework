@@ -2,7 +2,7 @@ fx_version 'cerulean'
 games { 'gta5' }
 
 author 'Slayer'
-description 'KKRP.cz | Modules'
+description 'Modules'
 lua54 'yes'
 version '1.0'
 

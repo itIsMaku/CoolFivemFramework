@@ -8,8 +8,8 @@ Citizen.CreateThread(
             Citizen.Wait(500)
         end
 
-        if exports.data:getUserVar("admin") >0 then
-            createNewKeyMapping({command = "adminmenu", text = "Admin menu", key = "F11"})
+        if exports.data:getUserVar("admin") > 0 then
+            createNewKeyMapping({ command = "adminmenu", text = "Admin menu", key = "F11" })
         end
     end
 )
@@ -33,7 +33,7 @@ AddEventHandler(
 RegisterCommand(
     "adminmenu",
     function(source, args)
-        if exports.data:getUserVar("admin") > 0 then
+        if exports.data:getUserVar("admin") > 1 then
             if not WarMenu.IsAnyMenuOpened() then
                 TriggerServerEvent("admin:openMenu", args[1])
             end
@@ -42,7 +42,7 @@ RegisterCommand(
                 "chat:addMessage",
                 {
                     templateId = "error",
-                    args = {"Na toto nemáš právo!"}
+                    args = { "Na toto nemáš právo!" }
                 }
             )
         end
@@ -79,7 +79,7 @@ AddEventHandler(
                         elseif WarMenu.MenuButton("Spravovat čas a počasí", "admin_timeweather") then
                         elseif WarMenu.Button("Mechanik menu") then
                             WarMenu.CloseMenu()
-                            exports.mechanicmenu:openMechanicMenu({value = "main", job = "admin"})
+                            exports.mechanicmenu:openMechanicMenu({ value = "main", job = "admin" })
                         elseif WarMenu.Button("Ped menu") then
                             WarMenu.CloseMenu()
                             TriggerEvent("admin:skinmenu")
@@ -117,12 +117,12 @@ AddEventHandler(
                         if WarMenu.Button("Nastavit čas") then
                             exports.input:openInput(
                                 "number",
-                                {title = "Zadejte hodiny", placeholder = ""},
+                                { title = "Zadejte hodiny", placeholder = "" },
                                 function(hours)
                                     if hours then
                                         exports.input:openInput(
                                             "number",
-                                            {title = "Zadejte minuty", placeholder = ""},
+                                            { title = "Zadejte minuty", placeholder = "" },
                                             function(minutes)
                                                 if minutes then
                                                     WarMenu.CloseMenu()
@@ -138,7 +138,7 @@ AddEventHandler(
                         elseif WarMenu.Button("Nastavit fixní počasí") then
                             exports.input:openInput(
                                 "text",
-                                {title = "Zadejte nové počasí", placeholder = ""},
+                                { title = "Zadejte nové počasí", placeholder = "" },
                                 function(weather)
                                     if weather then
                                         WarMenu.CloseMenu()
@@ -184,7 +184,7 @@ AddEventHandler(
                         elseif WarMenu.Button("Vyhodit hráče") then
                             exports.input:openInput(
                                 "text",
-                                {title = "Zadejte důvod vyhození", placeholder = ""},
+                                { title = "Zadejte důvod vyhození", placeholder = "" },
                                 function(kickReason)
                                     if kickReason then
                                         WarMenu.CloseMenu()
@@ -208,14 +208,14 @@ AddEventHandler(
                             if WarMenu.Button(data.label) then
                                 exports.input:openInput(
                                     "text",
-                                    {title = "Zadejte důvod banu", placeholder = ""},
+                                    { title = "Zadejte důvod banu", placeholder = "" },
                                     function(kickReason)
                                         if kickReason then
                                             WarMenu.CloseMenu()
                                             ExecuteCommand(
                                                 "ban " ..
-                                                    selectedPlayer ..
-                                                        " " .. getBanKeyByMinutes(data.minutes) .. " " .. kickReason
+                                                selectedPlayer ..
+                                                " " .. getBanKeyByMinutes(data.minutes) .. " " .. kickReason
                                             )
                                         end
                                     end
@@ -292,67 +292,67 @@ end
 
 RegisterNetEvent("admin:charData")
 AddEventHandler("admin:charData",
-function(data)
-    if exports.data:getUserVar("admin") < 2 then
-        return
-    end
-
-    if not data then
-        print("CHYBA V DATECH")
-        return
-    end
-
-    WarMenu.CreateMenu(
-        "admin_char_info",
-        data.firstname .. " " .. data.lastname,
-        "ID: " .. data.source
-    )
-    WarMenu.SetMenuY("admin_char_info", 0.35)
-    WarMenu.OpenMenu("admin_char_info")
-
-    Citizen.CreateThread(
-        function()
-            while true do
-                if WarMenu.IsMenuOpened("admin_char_info") then
-                    WarMenu.Button("CHAR ID", data.id)
-                    WarMenu.Button("FIRSTNAME", data.firstname)
-                    WarMenu.Button("LASTNAME", data.lastname)
-                    WarMenu.Button("DOB", data.birth)
-                    WarMenu.Button("SEX", (data.sex == 0 and "MALE" or "FEMALE"))
-
-                    WarMenu.Button("STATUS", data.status)
-                    WarMenu.Button("HP", data.health)
-                    WarMenu.Button("ARMOUR", data.armour)
-
-                    if data.jobs then
-                        WarMenu.Button("JOBS")
-                        for _, v in pairs(data.jobs) do
-                            WarMenu.Button("            " .. v.job .. (v.duty and " [ ON ]" or ""), v.job_grade)
-                        end
-                    else
-                        WarMenu.Button("JOB", "UNEMPLOYED")
-                    end
-
-                    if data.skills then
-                        WarMenu.Button("SKILLS")
-                        for k, v in pairs(data.skills) do
-                            WarMenu.Button("            " .. k, v)
-                        end
-                    else
-                        WarMenu.Button("SKILLS", "WTF")
-                    end
-
-                    WarMenu.Display()
-                else
-                    WarMenu.CloseMenu()
-                    break
-                end
-
-                Citizen.Wait(0)
-            end
+    function(data)
+        if exports.data:getUserVar("admin") < 2 then
+            return
         end
-    )
-end)
+
+        if not data then
+            print("CHYBA V DATECH")
+            return
+        end
+
+        WarMenu.CreateMenu(
+            "admin_char_info",
+            data.firstname .. " " .. data.lastname,
+            "ID: " .. data.source
+        )
+        WarMenu.SetMenuY("admin_char_info", 0.35)
+        WarMenu.OpenMenu("admin_char_info")
+
+        Citizen.CreateThread(
+            function()
+                while true do
+                    if WarMenu.IsMenuOpened("admin_char_info") then
+                        WarMenu.Button("CHAR ID", data.id)
+                        WarMenu.Button("FIRSTNAME", data.firstname)
+                        WarMenu.Button("LASTNAME", data.lastname)
+                        WarMenu.Button("DOB", data.birth)
+                        WarMenu.Button("SEX", (data.sex == 0 and "MALE" or "FEMALE"))
+
+                        WarMenu.Button("STATUS", data.status)
+                        WarMenu.Button("HP", data.health)
+                        WarMenu.Button("ARMOUR", data.armour)
+
+                        if data.jobs then
+                            WarMenu.Button("JOBS")
+                            for _, v in pairs(data.jobs) do
+                                WarMenu.Button("            " .. v.job .. (v.duty and " [ ON ]" or ""), v.job_grade)
+                            end
+                        else
+                            WarMenu.Button("JOB", "UNEMPLOYED")
+                        end
+
+                        if data.skills then
+                            WarMenu.Button("SKILLS")
+                            for k, v in pairs(data.skills) do
+                                WarMenu.Button("            " .. k, v)
+                            end
+                        else
+                            WarMenu.Button("SKILLS", "WTF")
+                        end
+
+                        WarMenu.Display()
+                    else
+                        WarMenu.CloseMenu()
+                        break
+                    end
+
+                    Citizen.Wait(0)
+                end
+            end
+        )
+    end)
 
 function sortPlayers(a, b)
     return a.source < b.source

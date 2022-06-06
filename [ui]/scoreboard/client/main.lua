@@ -42,8 +42,6 @@ AddEventHandler(
         scoreboard = scoreboardData
         table.sort(scoreboard.players, sortPlayers)
 
-        updateRichPresence()
-
         SendNUIMessage(
             {
                 action = "refresh",
@@ -67,8 +65,6 @@ AddEventHandler(
         scoreboard.currentPlayers = #scoreboard.players
         table.sort(scoreboard.players, sortPlayers)
 
-        updateRichPresence()
-
         SendNUIMessage(
             {
                 action = "refresh",
@@ -86,7 +82,7 @@ AddEventHandler(
         if not scoreboard then
             return
         end
-        
+
         for i, data in each(scoreboard.players) do
             if user == data.source then
                 table.remove(scoreboard.players, i)
@@ -95,8 +91,6 @@ AddEventHandler(
         end
         scoreboard.currentPlayers = #scoreboard.players
         table.sort(scoreboard.players, sortPlayers)
-
-        updateRichPresence()
 
         SendNUIMessage(
             {
@@ -173,25 +167,10 @@ RegisterCommand(
     end
 )
 
-createNewKeyMapping({command = "+scoreboard", text = "Tabulka hráčů", key = "F10"})
+createNewKeyMapping({ command = "+scoreboard", text = "Tabulka hráčů", key = "F10" })
 
 function sortPlayers(a, b)
     return a.source < b.source
-end
-
-function updateRichPresence()
-    if not scoreboard then
-        return
-    end
-    SetDiscordAppId(815211329987018763)
-
-    SetRichPresence(scoreboard.name .. " (" .. scoreboard.currentPlayers .. "/" .. scoreboard.maxPlayers .. ")")
-    SetDiscordRichPresenceAsset("logo")
-    SetDiscordRichPresenceAssetText("server.cz | Join us")
-    SetDiscordRichPresenceAssetSmall("info")
-    SetDiscordRichPresenceAssetSmallText("Whitelist: server.cz")
-    SetDiscordRichPresenceAction(0, "server.cz Web", "https://server.cz/")
-    SetDiscordRichPresenceAction(1, "server.cz Discord", "https://discord.gg/Eb3rH7c")
 end
 
 function closeScoreboard()

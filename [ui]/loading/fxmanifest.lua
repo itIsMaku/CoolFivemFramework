@@ -8,7 +8,8 @@ client_script "client.lua"
 files {
     "html/main.html",
     "html/style.css",
-    "html/img/*"
+    "html/img/*",
+    "html/music/*"
 }
 
 loadscreen "html/main.html"

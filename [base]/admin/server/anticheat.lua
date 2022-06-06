@@ -6,6 +6,7 @@ local playerScreenshotTimeout = {}
 local playerGodModeChecks = {}
 local playerGodModeEnabled = {}
 local validResourceList
+local screenshotsPath = GetConvar('screenshotsPath', '/home/container/screenshots/')
 
 Citizen.CreateThread(
     function()
@@ -180,7 +181,7 @@ function takePlayerScreenshot(player, title, cb)
     exports["screenshot-basic"]:requestClientScreenshot(
         player,
         {
-            fileName = "/home/container/screenshots/" .. dir .. currentTime .. "-" .. player .. ".jpg"
+            fileName = screenshotsPath .. dir .. currentTime .. "-" .. player .. ".jpg"
         },
         function(err, data)
             if not err then

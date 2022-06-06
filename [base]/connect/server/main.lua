@@ -163,7 +163,7 @@ function DetermineDataByBuild(result, playerSteam, playerDiscord, _source, name)
                 inAnim = false,
                 source = _source,
                 status = nil,
-                admin = 1,
+                admin = permission,
                 settings = {},
                 character = nil,
                 chars_left = tonumber(chars),
@@ -283,7 +283,7 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
                                         if string.match(ban.playerIdentifiers, v) then
                                             print(
                                                 "[SYSTEM MESSAGE] BANNED USER TRIED TO CONNECT. IDENTIFIER: " ..
-                                                    v .. " | NICKNAME: " .. name
+                                                v .. " | NICKNAME: " .. name
                                             )
                                             local length = os.date("%d.%m.%Y %H:%M:%S", ban.dateEnd)
                                             if ban.permanent == 1 then
@@ -301,7 +301,7 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
                                             )
                                             deferrals.done(
                                                 "Na tvém účtu je aktivní ban!\nDůvod banu: " ..
-                                                    ban.reason .. "\nAdmin: " .. ban.admin .. "\nDatum vypršení: " .. length
+                                                ban.reason .. "\nAdmin: " .. ban.admin .. "\nDatum vypršení: " .. length
                                             )
                                             return
                                         end
@@ -352,7 +352,7 @@ function OnPlayerConnecting(name, setKickReason, deferrals)
                     end
 
                     if #result == 0 and serverBuild == 'localhost' then
-                        MySQL.insert('INSERT INTO users (identifier, name, discord) VALUES (?, ?, ?)', {playerSteam, name, playerDiscord}, function(id)
+                        MySQL.insert('INSERT INTO users (identifier, name, discord) VALUES (?, ?, ?)', { playerSteam, name, playerDiscord }, function(id)
                             print('User was saved into database.')
                         end)
                     end
@@ -485,8 +485,8 @@ function showAdaptiveCard(deferrals, title, text)
             {
                 "type": "TextBlock",
                 "text": "]==] ..
-            title ..
-            [==[",
+        title ..
+        [==[",
             "wrap": true,
             "size": "Large",
             "weight": "Bolder"
@@ -494,8 +494,8 @@ function showAdaptiveCard(deferrals, title, text)
         {
             "type": "TextBlock",
             "text": "]==] ..
-            text ..
-            [==[",
+        text ..
+        [==[",
     "wrap": true,
     "size": "Medium"
 },
